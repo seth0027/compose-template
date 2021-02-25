@@ -22,7 +22,11 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.example.androiddevchallenge.ui.theme.MyTheme
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -49,20 +53,23 @@ private fun AppNavigation(context: Context) {
             OverViewScreen(context = context) { pet ->
                 val petJson = gson.toJson(pet)
                 Log.d("TAG", "petjson is : $petJson")
-                navController.navigate("details/${petJson}")
+                navController.navigate("details/$petJson")
             }
         }
 
-        composable("details/{pet}", arguments = listOf(navArgument("pet") {
-            type = NavType.StringType
-        })) {
+        composable(
+            "details/{pet}",
+            arguments = listOf(
+                navArgument("pet") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
             it.arguments?.getString("pet")?.let { petJson ->
                 val pet =
                     gson.fromJson(petJson, Pet::class.java)
                 DetailsScreen(pet = pet)
             }
-
         }
     }
 }
-
