@@ -34,14 +34,14 @@ fun DetailsScreen(petId: Int, overViewModel: OverViewModel) {
     pet.value?.let {
         DetailView(it)
     }
-
 }
 
 @Composable
 private fun DetailView(pet: Pet) {
 
     Card(
-        elevation = 4.dp, modifier = Modifier
+        elevation = 4.dp,
+        modifier = Modifier
             .padding(5.dp)
     ) {
         Column(modifier = Modifier.animateContentSize()) {
@@ -54,7 +54,6 @@ private fun DetailView(pet: Pet) {
             Text(text = pet.description)
         }
     }
-
 }
 
 @Preview(widthDp = 360, heightDp = 640)

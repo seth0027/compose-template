@@ -24,7 +24,12 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -37,7 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.example.androiddevchallenge.ui.theme.MyTheme
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -70,7 +79,6 @@ fun PetApp() {
     }
 }
 
-
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun PetTopBar(title: String, navController: NavHostController, showBack: Boolean) {
@@ -102,7 +110,8 @@ private fun MyBack(navHostController: NavHostController) {
 @Composable
 private fun AppNavigation(
     navController: NavHostController,
-    overViewModel: OverViewModel = viewModel(), navigationTitle: (String, Boolean) -> Unit
+    overViewModel: OverViewModel = viewModel(),
+    navigationTitle: (String, Boolean) -> Unit
 ) {
     NavHost(navController, startDestination = "overview") {
         composable("overview") {
