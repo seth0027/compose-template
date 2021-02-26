@@ -19,13 +19,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DetailsScreen(pet: Pet) {
+fun DetailsScreen(petId: Int, overViewModel: OverViewModel) {
 
-    DetailView(pet)
+    val pet = overViewModel.getPet(petId).observeAsState(null)
+
+    pet.value?.let {
+        DetailView(it)
+    }
+
 }
 
 @Composable

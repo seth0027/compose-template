@@ -15,18 +15,20 @@
  */
 package com.example.androiddevchallenge
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navArgument
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.*
 import com.example.androiddevchallenge.ui.theme.MyTheme
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -39,36 +41,71 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyTheme {
-                AppNavigation(context = this)
+                PetApp()
             }
         }
     }
 }
 
 @Composable
-private fun AppNavigation(context: Context) {
+fun PetApp() {
+    val title = remember { mutableStateOf("") }
+    val showBack = remember { mutableStateOf(false) }
     val navController = rememberNavController()
+
+    Scaffold(topBar = { PetTopBar(title = title.value, navController, showBack.value) }) {
+        AppNavigation(navController) { navTitle, shouldBack ->
+            title.value = navTitle
+            showBack.value = shouldBack
+        }
+    }
+}
+
+@Composable
+private fun PetTopBar(title: String, navController: NavHostController, showBack: Boolean) {
+    TopAppBar(
+        title = { Text(text = title) }, navigationIcon =
+        if (showBack) {
+            { MyBack(navHostController = navController) }
+        } else null
+    )
+}
+
+@Composable
+private fun MyBack(navHostController: NavHostController) {
+    IconButton(onClick = { navHostController.navigateUp() }) {
+        Icon(
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = stringResource(id = R.string.back_arrow)
+        )
+    }
+}
+
+@Composable
+private fun AppNavigation(
+    navController: NavHostController,
+    overViewModel: OverViewModel = viewModel(), navigationTitle: (String, Boolean) -> Unit
+) {
+
     NavHost(navController, startDestination = "overview") {
         composable("overview") {
-            OverViewScreen(context = context) { pet ->
-                val petJson = gson.toJson(pet)
-                Log.d("TAG", "petjson is : $petJson")
-                navController.navigate("details/$petJson")
+            navigationTitle("Pet List", false)
+            OverViewScreen(overViewModel = overViewModel) { pet ->
+                navigationTitle(pet.name, true)
+                navController.navigate("details/${pet.id}")
             }
         }
 
         composable(
-            "details/{pet}",
+            "details/{petId}",
             arguments = listOf(
-                navArgument("pet") {
-                    type = NavType.StringType
+                navArgument("petId") {
+                    type = NavType.IntType
                 }
             )
         ) {
-            it.arguments?.getString("pet")?.let { petJson ->
-                val pet =
-                    gson.fromJson(petJson, Pet::class.java)
-                DetailsScreen(pet = pet)
+            it.arguments?.getInt("petId")?.let { petId ->
+                DetailsScreen(petId = petId, overViewModel = overViewModel)
             }
         }
     }

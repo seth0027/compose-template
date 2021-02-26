@@ -21,22 +21,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.transform.CircleCropTransformation
 import com.google.gson.Gson
@@ -66,12 +64,14 @@ class OverViewModel : ViewModel() {
             true
         } ?: false
     }
+
+    fun getPet(petId: Int): LiveData<Pet?> = pets.map { it.find { pet -> pet.id == petId } }
 }
 
 @Composable
 fun OverViewScreen(
-    context: Context,
-    overViewModel: OverViewModel = viewModel(),
+    context: Context = LocalContext.current,
+    overViewModel: OverViewModel ,
     onClick: (Pet) -> Unit
 ) {
     val isLoaded = remember { mutableStateOf(overViewModel.populateList(context = context)) }

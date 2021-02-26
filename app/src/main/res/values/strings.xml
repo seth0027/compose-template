@@ -11,4 +11,5 @@
       -->
     <string name="app_name">AndroidDevChallenge</string>
     <string name="fail_message">Failed to load data resources</string>
+    <string name="back_arrow">Back Arrow</string>
 </resources>
