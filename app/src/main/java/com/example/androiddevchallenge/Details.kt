@@ -15,11 +15,14 @@
  */
 package com.example.androiddevchallenge
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -36,19 +39,25 @@ fun DetailsScreen(petId: Int, overViewModel: OverViewModel) {
 
 @Composable
 private fun DetailView(pet: Pet) {
-    Card(elevation = 4.dp) {
-        Column {
+
+    Card(
+        elevation = 4.dp, modifier = Modifier
+            .padding(5.dp)
+    ) {
+        Column(modifier = Modifier.animateContentSize()) {
             CustomCoilImage(data = pet.photo2)
             Text(text = pet.name)
             Text(text = pet.breed)
             Text(text = pet.gender)
             Text(text = pet.age)
             Text(text = pet.size)
+            Text(text = pet.description)
         }
     }
+
 }
 
-@Preview
+@Preview(widthDp = 360, heightDp = 640)
 @Composable
 private fun DetailViewPreview() {
     DetailView(pet = dummyList[0])

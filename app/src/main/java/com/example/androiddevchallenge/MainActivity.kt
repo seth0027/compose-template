@@ -18,13 +18,22 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -61,14 +70,23 @@ fun PetApp() {
     }
 }
 
+
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun PetTopBar(title: String, navController: NavHostController, showBack: Boolean) {
-    TopAppBar(
-        title = { Text(text = title) }, navigationIcon =
-        if (showBack) {
-            { MyBack(navHostController = navController) }
-        } else null
-    )
+    TopAppBar {
+        Row(
+            modifier = Modifier.animateContentSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(6.dp))
+            AnimatedVisibility(visible = showBack) {
+                MyBack(navHostController = navController)
+                Spacer(modifier = Modifier.width(6.dp))
+            }
+            Text(text = title, style = MaterialTheme.typography.h5)
+        }
+    }
 }
 
 @Composable
@@ -86,7 +104,6 @@ private fun AppNavigation(
     navController: NavHostController,
     overViewModel: OverViewModel = viewModel(), navigationTitle: (String, Boolean) -> Unit
 ) {
-
     NavHost(navController, startDestination = "overview") {
         composable("overview") {
             navigationTitle("Pet List", false)

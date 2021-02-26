@@ -16,6 +16,7 @@
 package com.example.androiddevchallenge
 
 import android.content.Context
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.transform.CircleCropTransformation
 import com.google.gson.Gson
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -152,11 +152,15 @@ fun CustomCoilImage(data: Any) {
         data = data,
         requestBuilder = { transformations(CircleCropTransformation()) }
     ) { imageLoadState ->
-        when (imageLoadState) {
-            is ImageLoadState.Success -> Image(
-                painter = imageLoadState.painter,
-                contentDescription = stringResource(id = R.string.app_name)
-            )
+        Crossfade(targetState = imageLoadState) {
+            when (it) {
+                is ImageLoadState.Success -> Image(
+                    painter = it.painter,
+                    contentDescription = stringResource(id = R.string.app_name)
+                )
+            }
+
         }
+
     }
 }
